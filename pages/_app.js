@@ -10,7 +10,7 @@ export const theme = extendTheme({
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    localStorage.clear();
+    localStorage.setItem("chakra-ui-color-mode", "light");
   }, []);
   return (
     <ChakraProvider>
