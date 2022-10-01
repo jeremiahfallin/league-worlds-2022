@@ -1,11 +1,10 @@
-import React, { Fragment } from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import { CargoClient } from "poro";
 import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
@@ -19,6 +18,7 @@ import {
   useFilters,
   useGlobalFilter,
   useColumnOrder,
+  useExpanded,
 } from "react-table";
 
 const cargo = new CargoClient();
@@ -417,6 +417,19 @@ function NumberRangeColumnFilter({
   );
 }
 
+const gradient = [
+  "red.100",
+  "red.200",
+  "red.300",
+  "red.400",
+  "red.500",
+  "green.500",
+  "green.400",
+  "green.300",
+  "green.200",
+  "green.100",
+];
+
 export default function Home({ results }) {
   const filterTypes = React.useMemo(
     () => ({
@@ -436,6 +449,15 @@ export default function Home({ results }) {
   const data = React.useMemo(() => results.data, [results.data]);
   const columns = React.useMemo(
     () => [
+      {
+        Header: () => null,
+        id: "expander",
+        Cell: ({ row }) => (
+          <span {...row.getToggleRowExpandedProps()}>
+            {row.isExpanded ? "👇" : "👉"}
+          </span>
+        ),
+      },
       {
         Header: "Champion",
         accessor: "champion",
@@ -518,36 +540,6 @@ export default function Home({ results }) {
         Filter: NumberRangeColumnFilter,
         filter: "between",
       },
-      {
-        Header: "Top Picks",
-        accessor: "topPicks",
-        Filter: NumberRangeColumnFilter,
-        filter: "between",
-      },
-      {
-        Header: "Jungle Picks",
-        accessor: "junglePicks",
-        Filter: NumberRangeColumnFilter,
-        filter: "between",
-      },
-      {
-        Header: "Mid Picks",
-        accessor: "midPicks",
-        Filter: NumberRangeColumnFilter,
-        filter: "between",
-      },
-      {
-        Header: "Bot Picks",
-        accessor: "botPicks",
-        Filter: NumberRangeColumnFilter,
-        filter: "between",
-      },
-      {
-        Header: "Support Picks",
-        accessor: "supportPicks",
-        Filter: NumberRangeColumnFilter,
-        filter: "between",
-      },
     ],
     []
   );
@@ -570,7 +562,8 @@ export default function Home({ results }) {
       useColumnOrder,
       useFilters,
       useGlobalFilter,
-      useSortBy
+      useSortBy,
+      useExpanded
     );
   return (
     <div>
@@ -582,31 +575,48 @@ export default function Home({ results }) {
 
       <main>
         <TableContainer>
-          <Table {...getTableProps()} variant="striped" size="sm">
+          <Table {...getTableProps()} size="sm">
             <Thead>
               {headerGroups.map((headerGroup) => (
                 <Tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-                  {headerGroup.headers.map((column) => (
-                    <Th key={column.id}>
-                      <Box
-                        {...column.getHeaderProps(
-                          column.getSortByToggleProps()
-                        )}
-                      >
-                        {column.render("Header")}
-                        <span>
-                          {column.isSorted
-                            ? column.isSortedDesc
-                              ? " 🔽"
-                              : " 🔼"
-                            : ""}
-                        </span>
-                      </Box>
-                      <Box>
-                        {column.canFilter ? column.render("Filter") : null}
-                      </Box>
-                    </Th>
-                  ))}
+                  {headerGroup.headers.map((column) => {
+                    let bgColor = "";
+                    if (
+                      column.id === "round1Picks" ||
+                      column.id === "round3Picks" ||
+                      column.id === "round6Picks"
+                    ) {
+                      bgColor = "blue.700";
+                    } else if (
+                      column.id === "round2Picks" ||
+                      column.id === "round4Picks" ||
+                      column.id === "round5Picks" ||
+                      column.id === "round7Picks"
+                    ) {
+                      bgColor = "red.700";
+                    }
+                    return (
+                      <Th key={column.id} bgColor={bgColor}>
+                        <Box
+                          {...column.getHeaderProps(
+                            column.getSortByToggleProps()
+                          )}
+                        >
+                          {column.render("Header")}
+                          <span>
+                            {column.isSorted
+                              ? column.isSortedDesc
+                                ? " 🔽"
+                                : " 🔼"
+                              : ""}
+                          </span>
+                        </Box>
+                        <Box>
+                          {column.canFilter ? column.render("Filter") : null}
+                        </Box>
+                      </Th>
+                    );
+                  })}
                 </Tr>
               ))}
             </Thead>
@@ -614,26 +624,51 @@ export default function Home({ results }) {
               {rows.map((row) => {
                 prepareRow(row);
                 return (
-                  <Tr {...row.getRowProps()} key={row.id}>
-                    {row.cells.map((cell) => {
-                      if (
-                        cell.column.id !== "champion" &&
-                        cell.column.id !== "totalBans" &&
-                        cell.column.id !== "totalPicks"
-                      ) {
-                        return (
-                          <Td key={cell.id} {...cell.getCellProps()}>
-                            {cell.render("Cell")}%
-                          </Td>
-                        );
-                      }
-                      return (
-                        <Td key={cell.id} {...cell.getCellProps()}>
-                          {cell.render("Cell")}
-                        </Td>
-                      );
-                    })}
-                  </Tr>
+                  <>
+                    <Tr {...row.getRowProps()} key={row.id}>
+                      {row.cells.map((cell) => {
+                        if (
+                          cell.column.id !== "champion" &&
+                          cell.column.id !== "totalBans" &&
+                          cell.column.id !== "totalPicks" &&
+                          cell.column.id !== "expander"
+                        ) {
+                          return (
+                            <Td
+                              key={cell.id}
+                              backgroundColor={`hsl(${(
+                                (cell.value / 100) *
+                                120
+                              ).toString(10)}, 100%, 40%)`}
+                            >
+                              {cell.render("Cell")}%
+                            </Td>
+                          );
+                        }
+                        return <Td key={cell.id}>{cell.render("Cell")}</Td>;
+                      })}
+                    </Tr>
+                    {row.isExpanded ? (
+                      <>
+                        <Tr>
+                          <Td />
+                          <Td>Top Picks</Td>
+                          <Td>Jungle Picks</Td>
+                          <Td>Mid Picks</Td>
+                          <Td>Bot Picks</Td>
+                          <Td>Support Picks</Td>
+                        </Tr>
+                        <Tr>
+                          <Td />
+                          <Td>{row.original.topPicks}%</Td>
+                          <Td>{row.original.junglePicks}%</Td>
+                          <Td>{row.original.midPicks}%</Td>
+                          <Td>{row.original.botPicks}%</Td>
+                          <Td>{row.original.supportPicks}%</Td>
+                        </Tr>
+                      </>
+                    ) : null}
+                  </>
                 );
               })}
             </Tbody>
