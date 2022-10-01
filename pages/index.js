@@ -586,14 +586,14 @@ export default function Home({ results }) {
                       column.id === "round3Picks" ||
                       column.id === "round6Picks"
                     ) {
-                      bgColor = "blue.700";
+                      bgColor = "blue.200";
                     } else if (
                       column.id === "round2Picks" ||
                       column.id === "round4Picks" ||
                       column.id === "round5Picks" ||
                       column.id === "round7Picks"
                     ) {
-                      bgColor = "red.700";
+                      bgColor = "red.200";
                     }
                     return (
                       <Th key={column.id} bgColor={bgColor}>
@@ -639,7 +639,7 @@ export default function Home({ results }) {
                               backgroundColor={`hsl(${(
                                 (cell.value / 100) *
                                 120
-                              ).toString(10)}, 100%, 40%)`}
+                              ).toString(10)}, 100%, 50%, .4)`}
                             >
                               {cell.render("Cell")}%
                             </Td>

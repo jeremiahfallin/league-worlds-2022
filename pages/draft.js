@@ -68,11 +68,9 @@ const DraftBox = ({ children, ...rest }) => {
   return (
     <Box
       h="50px"
-      bg="gray.800"
       display="flex"
       justifyContent="center"
       alignItems="center"
-      color="white"
       fontSize="xl"
       fontWeight="bold"
       {...rest}
@@ -85,40 +83,36 @@ const DraftBox = ({ children, ...rest }) => {
 const DraftCard = ({ draft, winner, team1, team2 }) => {
   return (
     <Box
-      w={"320px"}
-      border={
-        winner === team1
-          ? "2px solid #00bfff"
-          : winner === team2
-          ? "2px solid #ff0000"
-          : "2px solid #000000"
-      }
+      w={"400px"}
+      borderWidth="2px"
+      borderColor={winner === team1 ? "blue.600" : "red.600"}
     >
-      <Flex justifyContent={"space-between"} p={2}>
+      <Flex justifyContent={"space-between"} p={4}>
         <Heading size="md">{team1}</Heading>
         <Heading size="md">{team2}</Heading>
       </Flex>
 
       <Flex justifyContent={"space-between"}>
         <Flex direction={"column"} justifyContent="center">
-          <DraftBox borderColor="gray.700" borderWidth="2px">
+          <DraftBox p={4} borderColor="gray.700" borderWidth="2px">
             {draft.bb1} ⛔
           </DraftBox>
           <DraftBox
-            borderRightColor="gray.700"
-            borderRightWidth={1}
-            borderLefttyle={"solid"}
-            borderRightStyle={"solid"}
+            p={4}
+            borderColor="gray.700"
+            borderRightWidth="2px"
+            borderLeftWidth="2px"
           >
             {draft.bb2} ⛔
           </DraftBox>
-          <DraftBox borderColor="gray.700" borderWidth="2px">
+          <DraftBox p={4} borderColor="gray.700" borderWidth="2px">
             {draft.bb3} ⛔
           </DraftBox>
-          <DraftBox border="2px solid" borderColor={"blue.500"}>
+          <DraftBox p={4} border="2px solid" borderColor={"blue.500"}>
             {draft.b1}
           </DraftBox>
           <DraftBox
+            p={4}
             borderRightWidth="2px"
             borderColor={"blue.500"}
             borderLeftWidth="2px"
@@ -126,6 +120,7 @@ const DraftCard = ({ draft, winner, team1, team2 }) => {
             {draft.b2}
           </DraftBox>
           <DraftBox
+            p={4}
             borderRightWidth="2px"
             borderColor={"blue.500"}
             borderBottomWidth="2px"
@@ -133,10 +128,11 @@ const DraftCard = ({ draft, winner, team1, team2 }) => {
           >
             {draft.b3}
           </DraftBox>
-          <DraftBox borderColor="gray.700" borderWidth="2px">
+          <DraftBox p={4} borderColor="gray.700" borderWidth="2px">
             {draft.bb4} ⛔
           </DraftBox>
           <DraftBox
+            p={4}
             borderColor="gray.700"
             borderLeftWidth="2px"
             borderRightWidth="2px"
@@ -145,6 +141,7 @@ const DraftCard = ({ draft, winner, team1, team2 }) => {
             {draft.bb5} ⛔
           </DraftBox>
           <DraftBox
+            p={4}
             borderLeftWidth="2px"
             borderRightWidth="2px"
             borderColor={"blue.500"}
@@ -153,6 +150,7 @@ const DraftCard = ({ draft, winner, team1, team2 }) => {
             {draft.b4}
           </DraftBox>
           <DraftBox
+            p={4}
             borderRightWidth="2px"
             borderLeftWidth="2px"
             borderBottomWidth="2px"
@@ -162,16 +160,22 @@ const DraftCard = ({ draft, winner, team1, team2 }) => {
           </DraftBox>
         </Flex>
         <Flex direction={"column"}>
-          <DraftBox borderColor="gray.700" borderWidth="2px">
+          <DraftBox p={4} borderColor="gray.700" borderWidth="2px">
             ⛔ {draft.rb1}
           </DraftBox>
-          <DraftBox borderRightColor="gray.700" borderLeftWidth={1}>
+          <DraftBox
+            p={4}
+            borderColor="gray.700"
+            borderLeftWidth="2px"
+            borderRightWidth="2px"
+          >
             ⛔ {draft.rb2}
           </DraftBox>
-          <DraftBox borderColor="gray.700" borderWidth="2px">
+          <DraftBox p={4} borderColor="gray.700" borderWidth="2px">
             ⛔ {draft.rb3}
           </DraftBox>
           <DraftBox
+            p={4}
             borderColor="red.500"
             borderTopWidth="2px"
             borderLeftWidth="2px"
@@ -180,6 +184,7 @@ const DraftCard = ({ draft, winner, team1, team2 }) => {
             {draft.r1}
           </DraftBox>
           <DraftBox
+            p={4}
             borderColor="red.500"
             borderBottomWidth="2px"
             borderLeftWidth="2px"
@@ -188,6 +193,7 @@ const DraftCard = ({ draft, winner, team1, team2 }) => {
             {draft.r2}
           </DraftBox>
           <DraftBox
+            p={4}
             borderColor="red.500"
             borderBottomWidth="2px"
             borderLeftWidth="2px"
@@ -195,10 +201,11 @@ const DraftCard = ({ draft, winner, team1, team2 }) => {
           >
             {draft.r3}
           </DraftBox>
-          <DraftBox borderColor="gray.700" borderWidth="2px">
+          <DraftBox p={4} borderColor="gray.700" borderWidth="2px">
             ⛔ {draft.rb4}
           </DraftBox>
           <DraftBox
+            p={4}
             borderColor="gray.700"
             borderLeftWidth="2px"
             borderRightWidth="2px"
@@ -206,10 +213,11 @@ const DraftCard = ({ draft, winner, team1, team2 }) => {
           >
             ⛔ {draft.rb5}
           </DraftBox>
-          <DraftBox borderColor="red.500" borderWidth="2px">
+          <DraftBox p={4} borderColor="red.500" borderWidth="2px">
             {draft.r4}
           </DraftBox>
           <DraftBox
+            p={4}
             borderColor="red.500"
             borderBottomWidth="2px"
             borderLeftWidth="2px"
