@@ -231,17 +231,56 @@ async function getResultsInOrder() {
 
   Object.keys(aggregatedStats).forEach((champion) => {
     if (aggregatedStats[champion].totalPicks > 0) {
-      aggregatedStats[champion].winRate = Math.round(
+      aggregatedStats[champion].winRate = (
         (aggregatedStats[champion].totalWins /
           aggregatedStats[champion].totalPicks) *
-          100
-      );
+        100
+      ).toFixed(2);
     } else {
       aggregatedStats[champion].winRate = 0;
     }
+    Object.keys(aggregatedStats[champion]).forEach((key) => {
+      if (key !== "winRate" && key !== "totalBans" && key !== "totalPicks") {
+        if (
+          key !== "topPicks" &&
+          key !== "junglePicks" &&
+          key !== "midPicks" &&
+          key !== "botPicks" &&
+          key !== "supportPicks"
+        ) {
+          aggregatedStats[champion][key] = (
+            (aggregatedStats[champion][key] * 100) /
+            results.length
+          ).toFixed(2);
+        } else {
+          if (aggregatedStats[champion].totalPicks > 0) {
+            aggregatedStats[champion][key] = (
+              (aggregatedStats[champion][key] * 100) /
+              aggregatedStats[champion].totalPicks
+            ).toFixed(2);
+          } else {
+            aggregatedStats[champion][key] = 0;
+          }
+        }
+      }
+    });
   });
 
-  return { data: aggregatedStats, totalGames: results.length };
+  const returnStats = Object.keys(aggregatedStats)
+    .map((champion) => {
+      return {
+        champion,
+        ...aggregatedStats[champion],
+      };
+    })
+    .sort((a, b) => {
+      return b.totalPicks - a.totalPicks;
+    });
+
+  return {
+    data: returnStats,
+    totalGames: results.length,
+  };
 }
 
 function DefaultColumnFilter({
@@ -327,11 +366,15 @@ function NumberRangeColumnFilter({
   column: { filterValue = [], preFilteredRows, setFilter, id },
 }) {
   const [min, max] = React.useMemo(() => {
-    let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-    let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
+    let min = preFilteredRows.length
+      ? parseFloat(preFilteredRows[0].values[id])
+      : 0;
+    let max = preFilteredRows.length
+      ? parseFloat(preFilteredRows[0].values[id])
+      : 0;
     preFilteredRows.forEach((row) => {
-      min = Math.min(row.values[id], min);
-      max = Math.max(row.values[id], max);
+      min = Math.min(parseFloat(row.values[id]), min);
+      max = Math.max(parseFloat(row.values[id]), max);
     });
     return [min, max];
   }, [id, preFilteredRows]);
@@ -390,16 +433,7 @@ export default function Home({ results }) {
     }),
     []
   );
-  const data = React.useMemo(
-    () =>
-      Object.keys(results.data).map((champion) => {
-        return {
-          champion,
-          ...results.data[champion],
-        };
-      }),
-    [results.data]
-  );
+  const data = React.useMemo(() => results.data, [results.data]);
   const columns = React.useMemo(
     () => [
       {
@@ -582,6 +616,17 @@ export default function Home({ results }) {
                 return (
                   <Tr {...row.getRowProps()} key={row.id}>
                     {row.cells.map((cell) => {
+                      if (
+                        cell.column.id !== "champion" &&
+                        cell.column.id !== "totalBans" &&
+                        cell.column.id !== "totalPicks"
+                      ) {
+                        return (
+                          <Td key={cell.id} {...cell.getCellProps()}>
+                            {cell.render("Cell")}%
+                          </Td>
+                        );
+                      }
                       return (
                         <Td key={cell.id} {...cell.getCellProps()}>
                           {cell.render("Cell")}
