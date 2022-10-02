@@ -658,37 +658,37 @@ export default function Home({ results }) {
 
                           <span>
                             {column.id === "round1Picks" ? (
-                              <CustomToolTip label="Blue 1 picks">
+                              <CustomToolTip label="Blue 1">
                                 <span>ℹ</span>
                               </CustomToolTip>
                             ) : null}
                             {column.id === "round2Picks" ? (
-                              <CustomToolTip label="Red 1 or 2 picks">
+                              <CustomToolTip label="Red 1 or 2">
                                 <span>ℹ</span>
                               </CustomToolTip>
                             ) : null}
                             {column.id === "round3Picks" ? (
-                              <CustomToolTip label="Blue 2 or 3 picks">
+                              <CustomToolTip label="Blue 2 or 3">
                                 <span>ℹ</span>
                               </CustomToolTip>
                             ) : null}
                             {column.id === "round4Picks" ? (
-                              <CustomToolTip label="Red 3 picks">
+                              <CustomToolTip label="Red 3">
                                 <span>ℹ</span>
                               </CustomToolTip>
                             ) : null}
                             {column.id === "round5Picks" ? (
-                              <CustomToolTip label="Red 4 picks">
+                              <CustomToolTip label="Red 4">
                                 <span>ℹ</span>
                               </CustomToolTip>
                             ) : null}
                             {column.id === "round6Picks" ? (
-                              <CustomToolTip label="Blue 4 or 5 picks">
+                              <CustomToolTip label="Blue 4 or 5">
                                 <span>ℹ</span>
                               </CustomToolTip>
                             ) : null}
                             {column.id === "round7Picks" ? (
-                              <CustomToolTip label="Red 5 picks">
+                              <CustomToolTip label="Red 5">
                                 <span>ℹ</span>
                               </CustomToolTip>
                             ) : null}
@@ -711,6 +711,22 @@ export default function Home({ results }) {
                     <Tr {...row.getRowProps()} key={row.id}>
                       {row.cells.map((cell) => {
                         if (cell.row.isSelected) {
+                          if (
+                            cell.column.id !== "champion" &&
+                            cell.column.id !== "totalBans" &&
+                            cell.column.id !== "totalPicks" &&
+                            cell.column.id !== "expander" &&
+                            cell.column.id !== "selection"
+                          ) {
+                            return (
+                              <Td
+                                key={cell.id}
+                                backgroundColor={`hsl(260, 100%, 50%, .4)`}
+                              >
+                                {cell.render("Cell")}%
+                              </Td>
+                            );
+                          }
                           return (
                             <Td
                               key={cell.id}
