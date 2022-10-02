@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Head from "next/head";
 import { CargoClient } from "poro";
 import {
@@ -11,6 +11,7 @@ import {
   TableContainer,
   Box,
   Flex,
+  Tooltip,
 } from "@chakra-ui/react";
 import {
   useTable,
@@ -19,6 +20,7 @@ import {
   useGlobalFilter,
   useColumnOrder,
   useExpanded,
+  useRowSelect,
 } from "react-table";
 
 const cargo = new CargoClient();
@@ -430,6 +432,27 @@ const gradient = [
   "green.100",
 ];
 
+const IndeterminateCheckbox = React.forwardRef(
+  ({ indeterminate, ...rest }, ref) => {
+    const defaultRef = React.useRef();
+    const resolvedRef = ref || defaultRef;
+
+    React.useEffect(() => {
+      resolvedRef.current.indeterminate = indeterminate;
+    }, [resolvedRef, indeterminate]);
+
+    return (
+      <>
+        <input type="checkbox" ref={resolvedRef} {...rest} />
+      </>
+    );
+  }
+);
+
+const CustomToolTip = ({ label, children }) => (
+  <Tooltip label={label}>{children}</Tooltip>
+);
+
 export default function Home({ results }) {
   const filterTypes = React.useMemo(
     () => ({
@@ -493,12 +516,6 @@ export default function Home({ results }) {
         filter: "between",
       },
       {
-        Header: "Round 2 Bans",
-        accessor: "round2Bans",
-        Filter: NumberRangeColumnFilter,
-        filter: "between",
-      },
-      {
         Header: "Round 1 Picks",
         accessor: "round1Picks",
         Filter: NumberRangeColumnFilter,
@@ -519,6 +536,12 @@ export default function Home({ results }) {
       {
         Header: "Round 4 Picks",
         accessor: "round4Picks",
+        Filter: NumberRangeColumnFilter,
+        filter: "between",
+      },
+      {
+        Header: "Round 2 Bans",
+        accessor: "round2Bans",
         Filter: NumberRangeColumnFilter,
         filter: "between",
       },
@@ -563,7 +586,26 @@ export default function Home({ results }) {
       useFilters,
       useGlobalFilter,
       useSortBy,
-      useExpanded
+      useExpanded,
+      useRowSelect,
+      (hooks) => {
+        hooks.visibleColumns.push((columns) => [
+          {
+            id: "selection",
+            Header: ({ getToggleAllRowsSelectedProps }) => (
+              <div>
+                <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+              </div>
+            ),
+            Cell: ({ row }) => (
+              <div>
+                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+              </div>
+            ),
+          },
+          ...columns,
+        ]);
+      }
     );
   return (
     <div>
@@ -597,18 +639,58 @@ export default function Home({ results }) {
                     }
                     return (
                       <Th key={column.id} bgColor={bgColor}>
-                        <Box
-                          {...column.getHeaderProps(
-                            column.getSortByToggleProps()
-                          )}
-                        >
-                          {column.render("Header")}
+                        <Box>
+                          <span
+                            {...column.getHeaderProps(
+                              column.getSortByToggleProps()
+                            )}
+                          >
+                            {column.render("Header")}
+                            <span>
+                              {column.isSorted
+                                ? column.isSortedDesc
+                                  ? " 🔽"
+                                  : " 🔼"
+                                : ""}
+                            </span>{" "}
+                          </span>
+
                           <span>
-                            {column.isSorted
-                              ? column.isSortedDesc
-                                ? " 🔽"
-                                : " 🔼"
-                              : ""}
+                            {column.id === "round1Picks" ? (
+                              <CustomToolTip label="Blue 1 picks">
+                                <span>ℹ</span>
+                              </CustomToolTip>
+                            ) : null}
+                            {column.id === "round2Picks" ? (
+                              <CustomToolTip label="Red 1 or 2 picks">
+                                <span>ℹ</span>
+                              </CustomToolTip>
+                            ) : null}
+                            {column.id === "round3Picks" ? (
+                              <CustomToolTip label="Blue 2 or 3 picks">
+                                <span>ℹ</span>
+                              </CustomToolTip>
+                            ) : null}
+                            {column.id === "round4Picks" ? (
+                              <CustomToolTip label="Red 3 picks">
+                                <span>ℹ</span>
+                              </CustomToolTip>
+                            ) : null}
+                            {column.id === "round5Picks" ? (
+                              <CustomToolTip label="Red 4 picks">
+                                <span>ℹ</span>
+                              </CustomToolTip>
+                            ) : null}
+                            {column.id === "round6Picks" ? (
+                              <CustomToolTip label="Blue 4 or 5 picks">
+                                <span>ℹ</span>
+                              </CustomToolTip>
+                            ) : null}
+                            {column.id === "round7Picks" ? (
+                              <CustomToolTip label="Red 5 picks">
+                                <span>ℹ</span>
+                              </CustomToolTip>
+                            ) : null}
                           </span>
                         </Box>
                         <Box>
@@ -627,11 +709,22 @@ export default function Home({ results }) {
                   <>
                     <Tr {...row.getRowProps()} key={row.id}>
                       {row.cells.map((cell) => {
+                        if (cell.row.isSelected) {
+                          return (
+                            <Td
+                              key={cell.id}
+                              backgroundColor={`hsl(260, 100%, 50%, .4)`}
+                            >
+                              {cell.render("Cell")}
+                            </Td>
+                          );
+                        }
                         if (
                           cell.column.id !== "champion" &&
                           cell.column.id !== "totalBans" &&
                           cell.column.id !== "totalPicks" &&
-                          cell.column.id !== "expander"
+                          cell.column.id !== "expander" &&
+                          cell.column.id !== "selection"
                         ) {
                           return (
                             <Td
