@@ -657,6 +657,16 @@ export default function Home({ results }) {
                           </span>
 
                           <span>
+                            {column.id === "round1Bans" ? (
+                              <CustomToolTip label="Bans for Blue/Red 1, 2, or 3">
+                                <span>ℹ</span>
+                              </CustomToolTip>
+                            ) : null}
+                            {column.id === "round2Bans" ? (
+                              <CustomToolTip label="Bans for Blue/Red 4 or 5">
+                                <span>ℹ</span>
+                              </CustomToolTip>
+                            ) : null}
                             {column.id === "round1Picks" ? (
                               <CustomToolTip label="Blue 1">
                                 <span>ℹ</span>
