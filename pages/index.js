@@ -448,6 +448,7 @@ const IndeterminateCheckbox = React.forwardRef(
     );
   }
 );
+IndeterminateCheckbox.displayName = "IndeterminateCheckbox";
 
 const CustomToolTip = ({ label, children }) => (
   <Tooltip label={label}>{children}</Tooltip>
