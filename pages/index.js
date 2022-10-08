@@ -27,13 +27,21 @@ const cargo = new CargoClient();
 
 async function getResultsInOrder() {
   let results = [];
-  const pb = await cargo.query({
-    tables: ["PicksAndBansS7"],
-    where: "OverviewPage = '2022 Season World Championship/Play-In'",
-    orderBy: [{ field: "PicksAndBansS7._ID" }],
-  });
+  let pb = await Promise.all([
+    cargo.query({
+      tables: ["PicksAndBansS7"],
+      where: "OverviewPage = '2022 Season World Championship/Play-In'",
+      orderBy: [{ field: "PicksAndBansS7._ID" }],
+    }),
+    cargo.query({
+      tables: ["PicksAndBansS7"],
+      where: "OverviewPage = '2022 Season World Championship/Main Event'",
+      orderBy: [{ field: "PicksAndBansS7._ID" }],
+    }),
+  ]);
+  pb = pb.map((x) => x.data).flat();
 
-  const drafts = pb.data.filter((p) => p.Team1Ban1 !== "null");
+  const drafts = pb.filter((p) => p.Team1Ban1 !== "null");
 
   for (const p of drafts) {
     results.push({
@@ -418,19 +426,6 @@ function NumberRangeColumnFilter({
     </Flex>
   );
 }
-
-const gradient = [
-  "red.100",
-  "red.200",
-  "red.300",
-  "red.400",
-  "red.500",
-  "green.500",
-  "green.400",
-  "green.300",
-  "green.200",
-  "green.100",
-];
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
