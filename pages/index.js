@@ -775,6 +775,7 @@ export default function Home({ results }) {
                         </Tr>
                         <Tr>
                           <Td />
+                          <Td />
                           <Td>{row.original.topPicks}%</Td>
                           <Td>{row.original.junglePicks}%</Td>
                           <Td>{row.original.midPicks}%</Td>
@@ -790,7 +791,6 @@ export default function Home({ results }) {
           </Table>
         </TableContainer>
       </main>
-
       <footer></footer>
     </div>
   );
