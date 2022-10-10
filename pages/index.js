@@ -767,6 +767,7 @@ export default function Home({ results }) {
                       <>
                         <Tr>
                           <Td />
+                          <Td />
                           <Td>Top Picks</Td>
                           <Td>Jungle Picks</Td>
                           <Td>Mid Picks</Td>
