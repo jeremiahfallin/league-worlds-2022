@@ -289,7 +289,9 @@ export default function Home({ results, leagues }) {
           onChange={(e) => router.push(`/${e.target.value}`)}
         >
           {leagues.map((league) => (
-            <option value={league}>{league}</option>
+            <option key={league} value={league}>
+              {league}
+            </option>
           ))}
         </Select>
         <TableContainer>

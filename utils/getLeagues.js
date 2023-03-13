@@ -7,7 +7,6 @@ async function getLeagues() {
     tables: ["Tournaments"],
     where: "Tournaments.Date > '2020-01-01 00:00:00'",
   });
-  console.log(response);
 
   return response.data.map((league) => league._pageName);
 }

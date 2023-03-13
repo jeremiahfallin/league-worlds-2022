@@ -288,7 +288,9 @@ export default function ChampionStats({ results, leagues, league }) {
           onChange={(e) => router.push(`/${e.target.value}`)}
         >
           {leagues.map((league) => (
-            <option value={league}>{league}</option>
+            <option key={league} value={league}>
+              {league}
+            </option>
           ))}
         </Select>
         <TableContainer>
@@ -496,7 +498,6 @@ export async function getStaticPaths() {
 }
 
 export const getStaticProps = async ({ params }) => {
-  console.log(params);
   const resultsOrdered = await getResultsInOrder(params.league.join("/"));
 
   const allLeagues = await getLeagues();
