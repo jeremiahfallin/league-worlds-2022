@@ -494,6 +494,7 @@ export const getStaticProps = async () => {
       league.includes("LEC/") ||
       league.includes("LCK/") ||
       league.includes("LPL/") ||
+      league.includes("MSI/") ||
       league.includes("World")
     );
   });
