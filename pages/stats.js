@@ -7,8 +7,14 @@ async function getResultsInOrder() {
   let results = [];
   const pb = await cargo.query({
     tables: ["PicksAndBansS7"],
-    where: "OverviewPage = '2022 Season World Championship/Play-In'",
+    where: "OverviewPage = 'LCS/2023 Season/Summer Season'",
     orderBy: [{ field: "PicksAndBansS7._ID" }],
+  });
+
+  pb.data.forEach((p) => {
+    if (p.Team1Role1 !== "null") {
+      console.log(p);
+    }
   });
 
   const drafts = pb.data.filter((p) => p.Team1Ban1 !== "null");
@@ -26,28 +32,6 @@ async function getResultsInOrder() {
         team2Role3: p.Team2Role3,
         team2Role4: p.Team2Role4,
         team2Role5: p.Team2Role5,
-      },
-      championDraft: {
-        bb1: p.Team1Ban1,
-        rb1: p.Team2Ban1,
-        bb2: p.Team1Ban2,
-        rb2: p.Team2Ban2,
-        bb3: p.Team1Ban3,
-        rb3: p.Team2Ban3,
-        b1: p.Team1Pick1,
-        r1: p.Team2Pick1,
-        r2: p.Team2Pick2,
-        b2: p.Team1Pick2,
-        b3: p.Team1Pick3,
-        r3: p.Team2Pick3,
-        rb4: p.Team2Ban4,
-        bb4: p.Team1Ban4,
-        rb5: p.Team2Ban5,
-        bb5: p.Team1Ban5,
-        r4: p.Team2Pick4,
-        b4: p.Team1Pick4,
-        b5: p.Team1Pick5,
-        r5: p.Team2Pick5,
       },
       team1: p.Team1,
       team2: p.Team2,
@@ -114,6 +98,6 @@ export const getStaticProps = async () => {
   const REVALIDATE_TIMER = 60 * 10;
   return {
     props: { results: resultsOrdered },
-    revalidate: REVALIDATE_TIMER,
+    // revalidate: REVALIDATE_TIMER,
   };
 };

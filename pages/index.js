@@ -483,12 +483,18 @@ export const getStaticProps = async () => {
   const resultsOrdered = await getResultsInOrder();
   const allLeagues = await getLeagues();
   // filter out leagues other than LCS, LEC, LCK, LPL
+  allLeagues.forEach((league) => {
+    if (league.includes("World")) {
+      console.log(league);
+    }
+  });
   const leagues = allLeagues.filter((league) => {
     return (
       league.includes("LCS/") ||
       league.includes("LEC/") ||
       league.includes("LCK/") ||
-      league.includes("LPL/")
+      league.includes("LPL/") ||
+      league.includes("World")
     );
   });
 
